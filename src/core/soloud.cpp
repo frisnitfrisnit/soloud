@@ -29,6 +29,7 @@ freely, subject to the following restrictions:
 #include "soloud_internal.h"
 #include "soloud_thread.h"
 #include "soloud_fft.h"
+#include <algorithm>
 
 
 #ifdef SOLOUD_SSE_INTRINSICS
@@ -2012,6 +2013,21 @@ namespace SoLoud
 
 		// If we get this far, there's nothing to it: we'll have to sort the voices to find the most audible.
 
+#if 1
+		// Note: Seems to have been implemented incorrectly
+		// Fix from https://github.com/jarikomppa/soloud/issues/298#issuecomment-708036223
+		auto comp = [this](const unsigned int & a, const unsigned int & b)
+		{
+			// Test a>b
+			if((mVoice[a]->mFlags & AudioSourceInstance::PROTECTED) && !(mVoice[b]->mFlags & AudioSourceInstance::PROTECTED))
+				return true;
+			if((mVoice[b]->mFlags & AudioSourceInstance::PROTECTED) && !(mVoice[a]->mFlags & AudioSourceInstance::PROTECTED))
+				return false;
+			return mVoice[a]->mOverallVolume > mVoice[b]->mOverallVolume;
+		};
+
+		std::stable_sort(&mActiveVoice[0+mustlive], &mActiveVoice[candidates], comp);
+#else
 		// Iterative partial quicksort:
 		int left = 0, stack[24], pos = 0, right;
 		int len = candidates - mustlive;
@@ -2047,7 +2063,8 @@ namespace SoLoud
 			if (left >= k) break;
 			left = len;                  
 			len = stack[--pos];          
-		}	
+		}
+#endif
 		// TODO: should the rest of the voices be flagged INAUDIBLE?
 		mapResampleBuffers_internal();
 	}
