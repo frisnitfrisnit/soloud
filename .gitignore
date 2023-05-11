@@ -35,3 +35,6 @@ scripts/soloud_codegen.py
 glue/rpgmaker_soloud.rb
 *.lastcodeanalysissucceeded
 *.bak
+.DS_Store
+SoLoud.xcodeproj/project.pbxproj
+SoLoud.xcodeproj/xcuserdata/stuarthunt.xcuserdatad/xcschemes/xcschememanagement.plist
