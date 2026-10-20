@@ -38,3 +38,7 @@ glue/rpgmaker_soloud.rb
 .DS_Store
 SoLoud.xcodeproj/project.pbxproj
 SoLoud.xcodeproj/xcuserdata/stuarthunt.xcuserdatad/xcschemes/xcschememanagement.plist
+
+# Premake build output
+bin/
+bin-int/
